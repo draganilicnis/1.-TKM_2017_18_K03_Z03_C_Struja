@@ -3,6 +3,7 @@
 // https://arena.petlja.org/competition/r1-11-utvrdjivanje-tkm-k003#tab_129096 
 // https://petlja.org/biblioteka/r/problemi/takmicenja-srednje-skole/03_struja
 // https://github.com/draganilicnis/TKM_2017_18_K03_Z03_C_Struja/blob/main/TKM_2017_18_K03_Z03_C_Struja.css
+// https://onlinegdb.com/QD75mmLJO
 // https://olympicode.rs/takprog/2017_2018/kv3/03_struja/ 
 
 using System;
@@ -57,14 +58,8 @@ class TKM_2017_18_K03_Z03_C_Struja
                 Ch = (char)Console.Read();
                 if (bOk_Ch)
                 {
-                    if (Ch == ' ')
-                    {
-                        bOk_Ci = true;
-                    }
-                    else if (Ch == '.')
-                    {
-                        bOk_DT = true;
-                    }
+                    if (Ch == ' ') bOk_Ci = true;
+                    else if (Ch == '.') bOk_DT = true;
                     else if (Ch >= '0' && Ch <= '9')
                     {
                         int cifra = Ch - 48;
