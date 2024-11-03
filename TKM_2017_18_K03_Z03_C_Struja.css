@@ -1,29 +1,98 @@
+// C# MLE, C++ Bod 100
 // https://arena.petlja.org/sr-Latn-RS/competition/tkm-001-int#tab_129096 
-// https://arena.petlja.org/competition/r1-11-utvrdjivanje-tkm-k003#tab_129096
+// https://arena.petlja.org/competition/r1-11-utvrdjivanje-tkm-k003#tab_129096 
 // https://petlja.org/biblioteka/r/problemi/takmicenja-srednje-skole/03_struja
+// https://github.com/draganilicnis/TKM_2017_18_K03_Z03_C_Struja/blob/main/TKM_2017_18_K03_Z03_C_Struja.css
 // https://olympicode.rs/takprog/2017_2018/kv3/03_struja/ 
 
 using System;
-
-class TKM_2017_18_K03_Z03_Struja
+// using System.IO;
+class TKM_2017_18_K03_Z03_C_Struja
 {
-	static void Main()
-	{
+    static void Main()
+    {
+        // Struja_00_CS_Classic_string_Split();
+        Struja_01_CS_char_Console_Read();
+    }
+    static void Struja_00_CS_Classic_string_Split()
+    {
         string[] s1 = Console.ReadLine().Split();
-        int n = int.Parse(s1[0]);
-        double m = double.Parse(s1[1]);
-        double r = 1e10;
+        int N = int.Parse(s1[0]);                   // 1 <= N <= 10^6: int: Broj dana
+        double M = double.Parse(s1[1]);             // 1 <= M <= 10^6: int: Svota novca koja je na raspolaganju Stojanu na pocetku (iako je int ucitavamo kao double zbog max)
+        double cena_prethodna = 1e10;               // cena_pret <= 10^6: double: Maksimalna suma novca koji Stojan moze da ima na kraju poslednjeg dana (garantuje se da ne moze imati vise)
 
         string[] s2 = Console.ReadLine().Split();
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < N; i++)
         {
-            double c = double.Parse(s2[i]);
-            if (c > r)
+            double C = double.Parse(s2[i]);         // 1 <= C[i] <= 10^6: double: Cena jednog KWh i-tog dana 
+            if (C > cena_prethodna)                 // Ako je tekuca Cena > od Cene prethodnog dana, onda treba prodati struju
             {
-                m = m * (c / r);
+                M = M * (C / cena_prethodna);       // Ako je Cena > od Cene prethodnog dana, onda prodajom uvecavamo ukupnu svotu novca za procenat povecanja cene
             }
-            r = c;
+            cena_prethodna = C;                     // Tekuca cena postaje prethodna
         }
-        Console.WriteLine($"{m:F6}");
+        Console.WriteLine($"{M:F6}");               // Proveriti da li ce proci sve test primere i format u sledecoj liniji
+        // Console.WriteLine(M.ToString("F6"));        // Proveriti da li ce proci sve test primere i format u ovoj liniji
+    }
+    static void Struja_01_CS_char_Console_Read()
+    {
+        string[] s1 = Console.ReadLine().Split();
+        int N = int.Parse(s1[0]);                   // 1 <= N <= 10^6: int: Broj dana
+        double M = double.Parse(s1[1]);             // 1 <= M <= 10^6: int: Svota novca koja je na raspolaganju Stojanu na pocetku (iako je int ucitavamo kao double zbog max)
+        double cena_prethodna = 1e10;               // cena_pret <= 10^6: double: Maksimalna suma novca koji Stojan moze da ima na kraju poslednjeg dana (garantuje se da ne moze imati vise)
+
+        // int x = sizeof(s[0].GetType().);
+        // StreamReader sr = new StreamReader(Console.ReadLine());
+        if (N > 0)
+        {
+            char Ch;                // Char 
+            double B = 0;           // Broj (formiranje jednog broja na osnovu ucitanih karaktera, cifra po cifra, a koji ce predstavljati ucitanu tekucu cenu za i-ti dan
+            bool bOk_Ch = true;     // Procitan je ispravan karakter, ostajemo u petlji
+            bool bOk_Ci = false;    // Procitana je cena za i-ti dan Ci
+            bool bOk_DT = false;    // Procitana je decimalna tacka
+            int DT = 0;             // Broj cifara iza decimalne tacke
+            while (bOk_Ch)
+            {
+                Ch = (char)Console.Read();
+                if (bOk_Ch)
+                {
+                    if (Ch == ' ')
+                    {
+                        bOk_Ci = true;
+                    }
+                    else if (Ch == '.')
+                    {
+                        bOk_DT = true;
+                    }
+                    else if (Ch >= '0' && Ch <= '9')
+                    {
+                        int cifra = Ch - 48;
+                        B = 10 * B + cifra;
+                        if (bOk_DT) DT++;
+                    }
+                    else
+                    {
+                        bOk_Ch = false;                         // Samo jednom na kraju ulazne linje, sto znaci da treba da izadjemo iz petlje
+                        if (B > 0) bOk_Ci = true;               // Ali i treba da obratimo poslednju cenu za poslednji dan (C[N-1]), cena ne moze biti manja od 1!
+                    }
+                    if (bOk_Ci)
+                    {
+                        double C = B;
+                        if (DT > 0) C = C / (10 ^ DT);          // Ako je broj cifara iza decimalne tacke veci od nule
+                        if (C > cena_prethodna)                 // Ako je tekuca Cena > od Cene prethodnog dana, onda treba prodati struju
+                        {
+                            M = M * (C / cena_prethodna);       // Ako je Cena > od Cene prethodnog dana, onda prodajom uvecavamo ukupnu svotu novca za procenat povecanja cene
+                        }
+                        cena_prethodna = C;                     // Tekuca cena postaje prethodna
+                        B = 0;                                  // Priprema (reset) za sledecu cenu (i-ti dan)
+                        bOk_DT = false;                         // Priprema (reset) za sledecu cenu (i-ti dan)
+                        DT = 0;                                 // Priprema (reset) za sledecu cenu (i-ti dan)
+                        bOk_Ci = false;                         // Priprema (reset) za sledecu cenu (i-ti dan)
+                    }
+                }
+            }
+        }
+        Console.WriteLine($"{M:F6}");               // Proveriti da li ce proci sve test primere i format u sledecoj liniji
+        // Console.WriteLine(M.ToString("F6"));        // Proveriti da li ce proci sve test primere i format u ovoj liniji
     }
 }
