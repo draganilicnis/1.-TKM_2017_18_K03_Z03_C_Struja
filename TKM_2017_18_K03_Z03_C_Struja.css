@@ -1,19 +1,24 @@
 // C# MLE, C++ Bod 100
+// C# MLE > 64MB, C++ Bod 100
+// U jednoj ulaznoj liniji mnogo brojeva!
 // https://arena.petlja.org/sr-Latn-RS/competition/tkm-001-int#tab_129096 
 // https://arena.petlja.org/competition/r1-11-utvrdjivanje-tkm-k003#tab_129096 
 // https://petlja.org/biblioteka/r/problemi/takmicenja-srednje-skole/03_struja
 // https://github.com/draganilicnis/TKM_2017_18_K03_Z03_C_Struja/blob/main/TKM_2017_18_K03_Z03_C_Struja.css
 // https://onlinegdb.com/QD75mmLJO
+// https://medium.com/@epeshk/fast-console-io-on-net-6cb56a6db529
 // https://olympicode.rs/takprog/2017_2018/kv3/03_struja/ 
 
 using System;
-// using System.IO;
+using System.IO;
 class TKM_2017_18_K03_Z03_C_Struja
 {
     static void Main()
     {
         // Struja_00_CS_Classic_string_Split();
-        Struja_01_CS_char_Console_Read();
+        // Struja_01_CS_char_Console_Read();
+        // Struja_02_CS_StreamReader();
+        Struja_03_CS_StreamReader_i_Buffer();
     }
     static void Struja_00_CS_Classic_string_Split()
     {
@@ -43,8 +48,6 @@ class TKM_2017_18_K03_Z03_C_Struja
         double M = double.Parse(s1[1]);             // 1 <= M <= 10^6: int: Svota novca koja je na raspolaganju Stojanu na pocetku (iako je int ucitavamo kao double zbog max)
         double cena_prethodna = 1e10;               // cena_pret <= 10^6: double: Maksimalna suma novca koji Stojan moze da ima na kraju poslednjeg dana (garantuje se da ne moze imati vise)
 
-        // int x = sizeof(s[0].GetType().);
-        // StreamReader sr = new StreamReader(Console.ReadLine());
         if (N > 0)
         {
             char Ch;                // Char 
@@ -91,5 +94,99 @@ class TKM_2017_18_K03_Z03_C_Struja
 
         Console.WriteLine(M.ToString("F6"));        // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
         // Console.WriteLine($"{M:F6}");            // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
+    }
+
+    static void Struja_02_CS_StreamReader()
+    {
+        // https://medium.com/@epeshk/fast-console-io-on-net-6cb56a6db529
+        const int c_bufferSize = 16384;
+        using var input = new StreamReader(Console.OpenStandardInput(), bufferSize: c_bufferSize);    // Umesto Console.ReadLine() koristicemo input.ReadLine()   // using System.IO;
+        using var output = new StreamWriter(Console.OpenStandardOutput(), bufferSize: c_bufferSize);  // Umesto Console.WriteLine() koristicemo input.WriteLine() // using System.IO;
+
+        string[] s1 = input.ReadLine().Split();     // Umesto Console.ReadLine() koristicmo input.ReadLine()
+        int N = int.Parse(s1[0]);                   // 1 <= N <= 10^6: int: Broj dana
+        double M = double.Parse(s1[1]);             // 1 <= M <= 10^6: int: Svota novca koja je na raspolaganju Stojanu na pocetku (iako je int ucitavamo kao double zbog max)
+        double cena_prethodna = 1e10;               // cena_pret <= 10^6: double: Maksimalna suma novca koji Stojan moze da ima na kraju poslednjeg dana (garantuje se da ne moze imati vise)
+
+        // int x = sizeof(s[0].GetType().);
+        // StreamReader sr = new StreamReader(Console.ReadLine());          // using System.IO;
+        // StreamReader sr = new StreamReader(Console.OpenStandardInput());    // using System.IO;
+        // string sLinija = sr.ToString();
+        // sr.Close();
+
+        string[] s2 = input.ReadLine().Split();
+        for (int i = 0; i < N; i++)
+        {
+            double C = double.Parse(s2[i]);         // 1 <= C[i] <= 10^6: double: Cena jednog KWh i-tog dana 
+            if (C > cena_prethodna)                 // Ako je tekuca Cena > od Cene prethodnog dana, onda treba prodati struju
+            {
+                M = M * (C / cena_prethodna);       // Ako je Cena > od Cene prethodnog dana, onda prodajom uvecavamo ukupnu svotu novca za procenat povecanja cene
+            }
+            cena_prethodna = C;                     // Tekuca cena postaje prethodna
+        }
+
+        output.WriteLine(M.ToString("F6"));        // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
+        // output.WriteLine($"{M:F6}");            // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
+    }
+
+
+    // *************************************************************************************************
+    // Skener: Strim i bafer ULAZ
+    // *************************************************************************************************
+    // https://medium.com/@epeshk/fast-console-io-on-net-6cb56a6db529
+    static void Struja_03_CS_StreamReader_i_Buffer()
+    {
+        Scanner_ULAZ_Stream_Buffer scan = new Scanner_ULAZ_Stream_Buffer();
+
+        int N = scan.ReadInt();                     // 1 <= N <= 10^6: int: Broj dana
+        double M = scan.ReadInt();                  // 1 <= M <= 10^6: int: Svota novca koja je na raspolaganju Stojanu na pocetku (iako je int ucitavamo kao double zbog max)
+        double cena_prethodna = 1e10;               // cena_pret <= 10^6: double: Maksimalna suma novca koji Stojan moze da ima na kraju poslednjeg dana (garantuje se da ne moze imati vise)
+
+        for (int i = 0; i < N; i++)
+        {
+            double C = scan.ReadInt();              // 1 <= C[i] <= 10^6: double: Cena jednog KWh i-tog dana 
+            if (C > cena_prethodna)                 // Ako je tekuca Cena > od Cene prethodnog dana, onda treba prodati struju
+            {
+                M = M * (C / cena_prethodna);       // Ako je Cena > od Cene prethodnog dana, onda prodajom uvecavamo ukupnu svotu novca za procenat povecanja cene
+            }
+            cena_prethodna = C;                     // Tekuca cena postaje prethodna
+        }
+
+        Console.WriteLine(M.ToString("F6"));        // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
+        // Console.WriteLine($"{M:F6}");            // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
+    }
+}
+
+
+class Scanner_ULAZ_Stream_Buffer
+{
+    const int c_bufferSize = 16384; //32768
+    public StreamReader input = new(Console.OpenStandardInput(), bufferSize: c_bufferSize);
+    char[] buffer = new char[c_bufferSize];
+
+    public int ReadInt()
+    {
+        var length = PrepareToken();
+        return int.Parse(buffer.AsSpan(0, length));
+    }
+    
+    private int PrepareToken()
+    {
+        int length = 0;
+        bool readStart = false;
+        while (true)
+        {
+            int ch = input.Read();
+            if (ch == -1) break;
+
+            if (char.IsWhiteSpace((char)ch))
+            {
+                if (readStart) break;
+                continue;
+            }
+            readStart = true;
+            buffer[length++] = (char)ch;
+        }
+        return length;
     }
 }
