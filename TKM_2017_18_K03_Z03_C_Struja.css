@@ -31,8 +31,9 @@ class TKM_2017_18_K03_Z03_C_Struja
             }
             cena_prethodna = C;                     // Tekuca cena postaje prethodna
         }
-        Console.WriteLine($"{M:F6}");               // Proveriti da li ce proci sve test primere i format u sledecoj liniji
-        // Console.WriteLine(M.ToString("F6"));        // Proveriti da li ce proci sve test primere i format u ovoj liniji
+
+        Console.WriteLine(M.ToString("F6"));        // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
+        // Console.WriteLine($"{M:F6}");            // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
     }
     static void Struja_01_CS_char_Console_Read()
     {
@@ -92,7 +93,8 @@ class TKM_2017_18_K03_Z03_C_Struja
                 }
             }
         }
-        Console.WriteLine($"{M:F6}");               // Proveriti da li ce proci sve test primere i format u sledecoj liniji
-        // Console.WriteLine(M.ToString("F6"));        // Proveriti da li ce proci sve test primere i format u ovoj liniji
+
+        Console.WriteLine(M.ToString("F6"));        // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
+        // Console.WriteLine($"{M:F6}");            // Ispis vrednosti realnog broja sa 6 decimala moze na ova dva nacina
     }
 }
